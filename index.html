@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>阳了个阳在线网页版游戏 - 网博客栈</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style type="text/css">
+		#cards {
+			position: relative;
+			border: 1px solid #ddd;
+			margin: 0 auto;
+			background: rgba(0,0,0,.5);
+		}
+		#cards .card, #box .box .card {
+			position: absolute;
+			box-shadow: 0 0 8px #c9c9c9;
+			width: 50px;
+			height: 50px;
+			background-size: cover;
+			border: 1px solid #a2a3a3
+    		border-radius: 3px;
+		}
+		#box .box .card {
+			box-shadow: none;
+			width: 49px;
+			height: 48px;
+		}
+		#cards .card.waitRemove {
+			z-index: 999;
+		}
+		#cards .card[back]:after {
+			position: absolute;
+			content: '';
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,.5);
+		}
+		#box {
+			width: 350px;
+			margin: 0 auto;
+			border-left: 1px solid #ddd;
+			overflow: hidden;
+			margin-top: 10px;
+		}
+		#box .box {
+			width: 50px;
+			height:  50px;
+			float: left;
+			border-right: 1px solid #ddd;
+			border-top: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+			box-sizing: border-box;
+		}
+		#game-sun {
+			overflow: hidden;
+		    width: 350px;
+		    margin: 0 auto;
+		    height: 114px;
+		}
+		#game-sun .sun {
+			transform: scale(0.8);
+			-webkit-transform: scale(0.9);
+			width: 33%;
+			height: 80px;
+			float: left;
+		}
+		#game-sun .sun.animate {
+			animation-name: sun;
+			animation-duration: 0.95s;
+			-webkit-animation-name: sun;
+			-webkit-animation-duration: 0.95s;
+			animation-iteration-count: infinite;
+		}
+		@keyframes sun {
+		    0% {transform: scale(0.9);}
+		    10% {transform: scale(1);}
+		    11% {transform: scale(0.9);}
+		    60% {transform: scale(1);}
+		    61% {transform: scale(0.9);}
+		    100% {transform: scale(0.9);}
+		}
+		@-webkit-keyframes sun {
+		    0% {-webkit-transform: scale(0.9);}
+		    10% {-webkit-transform: scale(1);}
+		    11% {-webkit-transform: scale(0.9);}
+		    60% {-webkit-transform: scale(1);}
+		    61% {-webkit-transform: scale(0.9);}
+		    100% {-webkit-transform: scale(0.9);}
+		}
+		#refresh {
+			margin-top: 7px;
+		    padding: 5px 0px;
+		    width: 350px;
+		    display: none;
+		    box-sizing: border-box;
+		    cursor: pointer;
+		}
+		#game-cover {
+			width: 100%;
+			height: 100%;
+		}
+		#cards .cover {
+			width: 100%;
+		    height: 100%;
+		    font-size: 40px;
+		    line-height: 400px;
+		    text-align: center;
+		    position: absolute;
+		    left: 0;
+		    top: 0;
+		    background: rgba(255,255,255, .8);
+		    cursor: pointer;
+		}
+		#cards .cover.winer {
+			font-size: 100px;
+		    font-weight: bold;
+		    color: darkgray;
+		}
+		@-webkit-keyframes rotation{
+		    from {-webkit-transform: rotate(0deg);}
+		    to {-webkit-transform: rotate(360deg);}
+		}
+		@keyframes rotation{
+		    from {transform: rotate(0deg);}
+		    to {transform: rotate(360deg);}
+		}
+		.rotate {
+			animation: rotation 1s linear infinite;
+    		-moz-animation: rotation 1s linear infinite;
+    		-webkit-animation: rotation 1s linear infinite;
+    		-o-animation: rotation 1s linear infinite;
+    		transform-origin: center center;
+		}
+	</style>
+	<style type="text/css" id="card-bg-style"></style>
+</head>
+<body>
+	<div id="game-sun">
+		<div class="sun">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 269 262">
+	          <g id="The-Sun" transform="translate(9 46.4)">
+	            
+	            <path id="Fill-50" fill="#FAD480" d="M44.4 84.5a84.5 84.5 0 1 0 169.1 0 84.5 84.5 0 0 0-169 0"></path>
+	            <path id="Fill-51" fill="#F5C37F" d="M213.5 84.5a84.5 84.5 0 0 1-153 49.7 84.5 84.5 0 0 0 113.7-121 84.5 84.5 0 0 1 39.3 71.3"></path>
+	            <path id="Fill-52" fill="#FBD88D" d="M197.7 35A84.5 84.5 0 0 0 84 156 84.5 84.5 0 1 1 197.7 35"></path>
+	            
+	          </g>
+	          <g id="rays" fill="#FAD480">
+	            <path id="Fill-42" d="M138 30.9c-2.5 0-4.5-2-4.5-4.4v-22a4.4 4.4 0 0 1 8.9 0v22c0 2.4-2 4.4-4.5 4.4"></path>
+	            <path id="Fill-43" d="M138 261.9c-2.5 0-4.5-2-4.5-4.5v-22a4.4 4.4 0 0 1 8.9 0v22c0 2.5-2 4.5-4.5 4.5"></path>
+	            <path id="Fill-44" d="M60.4 57.8c-1.2 0-2.3-.4-3.2-1.3L41 40.1A4.4 4.4 0 0 1 47 34l16.4 16.3a4.4 4.4 0 0 1-3.1 7.6"></path>
+	            <path id="Fill-45" d="M44 229.3a4.4 4.4 0 0 1-3.1-7.6l16.3-16.3a4.4 4.4 0 0 1 6.3 6.2L47 228c-.8.9-2 1.3-3.1 1.3"></path>
+	            <path id="Fill-45" d="M10.4 147.2a4.4 4.4 0 0 1-3.1-7.5l16.4-16.4a4.4 4.4 0 0 1 6.2 6.3l-16.3 16.3c-1 .9-2 1.3-3.2 1.3" transform="rotate(44 18.6 134.6)"></path>
+	            <path id="Fill-45" d="M246.4 147.2a4.4 4.4 0 0 1-3.1-7.5l16.4-16.4a4.4 4.4 0 0 1 6.2 6.3l-16.3 16.3c-1 .9-2 1.3-3.2 1.3" transform="rotate(44 254.6 134.6)"></path>
+	            <path id="Fill-46" d="M231.9 229.3c-1.2 0-2.3-.4-3.2-1.3l-16.3-16.4a4.4 4.4 0 0 1 6.2-6.2l16.4 16.3a4.4 4.4 0 0 1-3.1 7.6"></path>
+	            <path id="Fill-47" d="M215.5 57.8a4.4 4.4 0 0 1-3.1-7.6L228.7 34A4.4 4.4 0 1 1 235 40l-16.4 16.4c-.8.9-2 1.3-3.1 1.3"></path>
+	          </g>
+	          <g id="sunglasses" transform="translate(48.6 79.1)">
+	            <path id="Fill-53" fill="#167D81" d="M87 36c-.9 0-1.8-.2-2.7-.8 0 0-2.5-1.7-5.6-2-3.1 0-5.9 1.3-5.9 1.3a4.8 4.8 0 0 1-6.4-2 4.8 4.8 0 0 1 1.9-6.4 22 22 0 0 1 11-2.4 22 22 0 0 1 10.6 3.7 4.8 4.8 0 0 1-2.8 8.7"></path>
+	            <path id="Fill-54" fill="#167D81" d="M29.3 58.7c-3.3-.2-6.6-.6-9.4-1.1C13.6 56.4 8.4 52 4.8 44.8c-5.6-11-6.4-26.7-2-35.6C7.1.5 20.8-.5 31.7.2c10.5.6 24.7 3.5 30.8 8.3 4.4 3.6 7.4 9.4 8.9 17.3 1 5.6.8 10.2.8 10.4v.1c-1 18.4-22.9 23.6-43 22.4"></path>
+	            <path id="Fill-55" fill="#32312F" d="M67.5 36c-.9 14.6-18.8 18.3-33.8 18.1h-2-.4l-6-.5-1.5-.2-3.1-.5a14.3 14.3 0 0 1-7.5-4.2l-.3-.2a28.2 28.2 0 0 1-6.6-13.2 46.2 46.2 0 0 1-1.4-14.8c.2-3.5 1-6.8 2.2-9.2 2-4 8-6 15.4-6.4a73 73 0 0 1 17 .9 83 83 0 0 1 16.6 4.4l.4.2c1.1.6 2.1 1.1 2.9 1.7l.1.1a14.2 14.2 0 0 1 3.5 4l1 1.7a29 29 0 0 1 2.4 7.2c1.3 5.8 1 11 1 11"></path>
+	            <path id="Fill-56" fill="#167D81" d="M124.6 64.5c-20-1.2-41-9-39.9-27.4V37c0-.2.4-4.9 2.1-10.2 2.4-7.7 6-13.2 11-16.1 6.6-4 21-5.2 31.6-4.6 10.7.7 24.3 3.4 27.5 12.4 3.3 9.5.6 24.9-6.3 35.2-4.4 6.7-10.2 10.5-16.5 10.8-2.9.2-6.2.2-9.5 0"></path>
+	            <path id="Fill-57" fill="#32312F" d="M153.5 27.4c.2 13.1-7.4 31.7-19.7 32.4a81.3 81.3 0 0 1-24.1-2.4 45 45 0 0 1-10.5-4.2A18.9 18.9 0 0 1 90 42.7c-.5-1.7-.7-3.4-.6-5.3 0 0 1.5-17 10.8-22.7 3.2-2 9.7-3.3 17.1-3.8a95.2 95.2 0 0 1 16.5.4c4 .5 7.8 1.3 11 2.5l.6.3c1.9.7 3.4 1.6 4.7 2.7a8 8 0 0 1 2.5 4c.6 2 .9 4.2 1 6.6"></path>
+	            <g id="shade1">
+	                <path fill="#747370" d="M49 7.8l-34.6 42-1.2-1.1-.3-.2a28.2 28.2 0 0 1-5.7-10.3l27.2-33a83 83 0 0 1 14.7 2.6"></path>
+	                <path fill="#9E9D9A" d="M63 16.2L31.8 54h-.5l-6-.5 34-41.5.2.1a14.2 14.2 0 0 1 3.5 4"></path>
+	             </g>
+	            <path id="Fill-60" fill="#9E9D9A" d="M133.8 11.3l-34.6 42a18.9 18.9 0 0 1-8.9-9.7l27-32.7a95.2 95.2 0 0 1 16.5.4"></path>
+	            <path id="Fill-61" fill="#747370" d="M150 16.8l-34.4 41.9a68.3 68.3 0 0 1-6-1.3L145.5 14c1.9.7 3.4 1.6 4.7 2.7"></path>
+	            <path id="Fill-62" fill="#FFFFFE" d="M58 30.4c-1.5 0-3-1-3.4-2.7-4-16-27-13.3-27.2-13.3a3.6 3.6 0 0 1-.9-7C36.7 6 57 8.4 61.5 26a3.6 3.6 0 0 1-3.4 4.4"></path>
+	            <path id="Fill-63" fill="#FFFFFE" d="M144.3 38.6h-.6c-2-.4-3.3-2.2-3-4.1.6-3.2 0-5.6-1.8-7.4-5-5.4-18.5-5.3-23.3-4.8a3.6 3.6 0 0 1-.7-7.1c.2 0 5-.5 11 0 8.4.7 14.5 3 18.2 7 3.3 3.5 4.5 8 3.7 13.4-.3 1.8-1.8 3-3.5 3"></path>
+	          </g>
+	          <g id="Mouth" transform="translate(110 143.5)">
+	            <path id="Fill-76" fill="#D75346" d="M27.8 0A14 14 0 0 1 0 0h27.8"></path>
+	            <path id="Fill-77" fill="#E69589" d="M22.2 10.8a13.9 13.9 0 0 1-16.5 0 13.9 13.9 0 0 1 16.5 0"></path>
+	            <path id="Fill-78" fill="#FFFDF8" d="M27.8 0a14 14 0 0 1-.6 3.8H.6A14 14 0 0 1 0 0h27.8"></path>
+	          </g>
+	    	</svg>
+		</div>
+		<div class="sun">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 269 262">
+	          <g id="The-Sun" transform="translate(9 46.4)">
+	            
+	            <path id="Fill-50" fill="#FAD480" d="M44.4 84.5a84.5 84.5 0 1 0 169.1 0 84.5 84.5 0 0 0-169 0"></path>
+	            <path id="Fill-51" fill="#F5C37F" d="M213.5 84.5a84.5 84.5 0 0 1-153 49.7 84.5 84.5 0 0 0 113.7-121 84.5 84.5 0 0 1 39.3 71.3"></path>
+	            <path id="Fill-52" fill="#FBD88D" d="M197.7 35A84.5 84.5 0 0 0 84 156 84.5 84.5 0 1 1 197.7 35"></path>
+	            
+	          </g>
+	          <g id="rays" fill="#FAD480">
+	            <path id="Fill-42" d="M138 30.9c-2.5 0-4.5-2-4.5-4.4v-22a4.4 4.4 0 0 1 8.9 0v22c0 2.4-2 4.4-4.5 4.4"></path>
+	            <path id="Fill-43" d="M138 261.9c-2.5 0-4.5-2-4.5-4.5v-22a4.4 4.4 0 0 1 8.9 0v22c0 2.5-2 4.5-4.5 4.5"></path>
+	            <path id="Fill-44" d="M60.4 57.8c-1.2 0-2.3-.4-3.2-1.3L41 40.1A4.4 4.4 0 0 1 47 34l16.4 16.3a4.4 4.4 0 0 1-3.1 7.6"></path>
+	            <path id="Fill-45" d="M44 229.3a4.4 4.4 0 0 1-3.1-7.6l16.3-16.3a4.4 4.4 0 0 1 6.3 6.2L47 228c-.8.9-2 1.3-3.1 1.3"></path>
+	            <path id="Fill-45" d="M10.4 147.2a4.4 4.4 0 0 1-3.1-7.5l16.4-16.4a4.4 4.4 0 0 1 6.2 6.3l-16.3 16.3c-1 .9-2 1.3-3.2 1.3" transform="rotate(44 18.6 134.6)"></path>
+	            <path id="Fill-45" d="M246.4 147.2a4.4 4.4 0 0 1-3.1-7.5l16.4-16.4a4.4 4.4 0 0 1 6.2 6.3l-16.3 16.3c-1 .9-2 1.3-3.2 1.3" transform="rotate(44 254.6 134.6)"></path>
+	            <path id="Fill-46" d="M231.9 229.3c-1.2 0-2.3-.4-3.2-1.3l-16.3-16.4a4.4 4.4 0 0 1 6.2-6.2l16.4 16.3a4.4 4.4 0 0 1-3.1 7.6"></path>
+	            <path id="Fill-47" d="M215.5 57.8a4.4 4.4 0 0 1-3.1-7.6L228.7 34A4.4 4.4 0 1 1 235 40l-16.4 16.4c-.8.9-2 1.3-3.1 1.3"></path>
+	          </g>
+	          <g id="sunglasses" transform="translate(48.6 79.1)">
+	            <path id="Fill-53" fill="#167D81" d="M87 36c-.9 0-1.8-.2-2.7-.8 0 0-2.5-1.7-5.6-2-3.1 0-5.9 1.3-5.9 1.3a4.8 4.8 0 0 1-6.4-2 4.8 4.8 0 0 1 1.9-6.4 22 22 0 0 1 11-2.4 22 22 0 0 1 10.6 3.7 4.8 4.8 0 0 1-2.8 8.7"></path>
+	            <path id="Fill-54" fill="#167D81" d="M29.3 58.7c-3.3-.2-6.6-.6-9.4-1.1C13.6 56.4 8.4 52 4.8 44.8c-5.6-11-6.4-26.7-2-35.6C7.1.5 20.8-.5 31.7.2c10.5.6 24.7 3.5 30.8 8.3 4.4 3.6 7.4 9.4 8.9 17.3 1 5.6.8 10.2.8 10.4v.1c-1 18.4-22.9 23.6-43 22.4"></path>
+	            <path id="Fill-55" fill="#32312F" d="M67.5 36c-.9 14.6-18.8 18.3-33.8 18.1h-2-.4l-6-.5-1.5-.2-3.1-.5a14.3 14.3 0 0 1-7.5-4.2l-.3-.2a28.2 28.2 0 0 1-6.6-13.2 46.2 46.2 0 0 1-1.4-14.8c.2-3.5 1-6.8 2.2-9.2 2-4 8-6 15.4-6.4a73 73 0 0 1 17 .9 83 83 0 0 1 16.6 4.4l.4.2c1.1.6 2.1 1.1 2.9 1.7l.1.1a14.2 14.2 0 0 1 3.5 4l1 1.7a29 29 0 0 1 2.4 7.2c1.3 5.8 1 11 1 11"></path>
+	            <path id="Fill-56" fill="#167D81" d="M124.6 64.5c-20-1.2-41-9-39.9-27.4V37c0-.2.4-4.9 2.1-10.2 2.4-7.7 6-13.2 11-16.1 6.6-4 21-5.2 31.6-4.6 10.7.7 24.3 3.4 27.5 12.4 3.3 9.5.6 24.9-6.3 35.2-4.4 6.7-10.2 10.5-16.5 10.8-2.9.2-6.2.2-9.5 0"></path>
+	            <path id="Fill-57" fill="#32312F" d="M153.5 27.4c.2 13.1-7.4 31.7-19.7 32.4a81.3 81.3 0 0 1-24.1-2.4 45 45 0 0 1-10.5-4.2A18.9 18.9 0 0 1 90 42.7c-.5-1.7-.7-3.4-.6-5.3 0 0 1.5-17 10.8-22.7 3.2-2 9.7-3.3 17.1-3.8a95.2 95.2 0 0 1 16.5.4c4 .5 7.8 1.3 11 2.5l.6.3c1.9.7 3.4 1.6 4.7 2.7a8 8 0 0 1 2.5 4c.6 2 .9 4.2 1 6.6"></path>
+	            <g id="shade1">
+	                <path fill="#747370" d="M49 7.8l-34.6 42-1.2-1.1-.3-.2a28.2 28.2 0 0 1-5.7-10.3l27.2-33a83 83 0 0 1 14.7 2.6"></path>
+	                <path fill="#9E9D9A" d="M63 16.2L31.8 54h-.5l-6-.5 34-41.5.2.1a14.2 14.2 0 0 1 3.5 4"></path>
+	             </g>
+	            <path id="Fill-60" fill="#9E9D9A" d="M133.8 11.3l-34.6 42a18.9 18.9 0 0 1-8.9-9.7l27-32.7a95.2 95.2 0 0 1 16.5.4"></path>
+	            <path id="Fill-61" fill="#747370" d="M150 16.8l-34.4 41.9a68.3 68.3 0 0 1-6-1.3L145.5 14c1.9.7 3.4 1.6 4.7 2.7"></path>
+	            <path id="Fill-62" fill="#FFFFFE" d="M58 30.4c-1.5 0-3-1-3.4-2.7-4-16-27-13.3-27.2-13.3a3.6 3.6 0 0 1-.9-7C36.7 6 57 8.4 61.5 26a3.6 3.6 0 0 1-3.4 4.4"></path>
+	            <path id="Fill-63" fill="#FFFFFE" d="M144.3 38.6h-.6c-2-.4-3.3-2.2-3-4.1.6-3.2 0-5.6-1.8-7.4-5-5.4-18.5-5.3-23.3-4.8a3.6 3.6 0 0 1-.7-7.1c.2 0 5-.5 11 0 8.4.7 14.5 3 18.2 7 3.3 3.5 4.5 8 3.7 13.4-.3 1.8-1.8 3-3.5 3"></path>
+	          </g>
+	          <g id="Mouth" transform="translate(110 143.5)">
+	            <path id="Fill-76" fill="#D75346" d="M27.8 0A14 14 0 0 1 0 0h27.8"></path>
+	            <path id="Fill-77" fill="#E69589" d="M22.2 10.8a13.9 13.9 0 0 1-16.5 0 13.9 13.9 0 0 1 16.5 0"></path>
+	            <path id="Fill-78" fill="#FFFDF8" d="M27.8 0a14 14 0 0 1-.6 3.8H.6A14 14 0 0 1 0 0h27.8"></path>
+	          </g>
+	    	</svg>
+		</div>
+		<div class="sun">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 269 262">
+	          <g id="The-Sun" transform="translate(9 46.4)">
+	            
+	            <path id="Fill-50" fill="#FAD480" d="M44.4 84.5a84.5 84.5 0 1 0 169.1 0 84.5 84.5 0 0 0-169 0"></path>
+	            <path id="Fill-51" fill="#F5C37F" d="M213.5 84.5a84.5 84.5 0 0 1-153 49.7 84.5 84.5 0 0 0 113.7-121 84.5 84.5 0 0 1 39.3 71.3"></path>
+	            <path id="Fill-52" fill="#FBD88D" d="M197.7 35A84.5 84.5 0 0 0 84 156 84.5 84.5 0 1 1 197.7 35"></path>
+	            
+	          </g>
+	          <g id="rays" fill="#FAD480">
+	            <path id="Fill-42" d="M138 30.9c-2.5 0-4.5-2-4.5-4.4v-22a4.4 4.4 0 0 1 8.9 0v22c0 2.4-2 4.4-4.5 4.4"></path>
+	            <path id="Fill-43" d="M138 261.9c-2.5 0-4.5-2-4.5-4.5v-22a4.4 4.4 0 0 1 8.9 0v22c0 2.5-2 4.5-4.5 4.5"></path>
+	            <path id="Fill-44" d="M60.4 57.8c-1.2 0-2.3-.4-3.2-1.3L41 40.1A4.4 4.4 0 0 1 47 34l16.4 16.3a4.4 4.4 0 0 1-3.1 7.6"></path>
+	            <path id="Fill-45" d="M44 229.3a4.4 4.4 0 0 1-3.1-7.6l16.3-16.3a4.4 4.4 0 0 1 6.3 6.2L47 228c-.8.9-2 1.3-3.1 1.3"></path>
+	            <path id="Fill-45" d="M10.4 147.2a4.4 4.4 0 0 1-3.1-7.5l16.4-16.4a4.4 4.4 0 0 1 6.2 6.3l-16.3 16.3c-1 .9-2 1.3-3.2 1.3" transform="rotate(44 18.6 134.6)"></path>
+	            <path id="Fill-45" d="M246.4 147.2a4.4 4.4 0 0 1-3.1-7.5l16.4-16.4a4.4 4.4 0 0 1 6.2 6.3l-16.3 16.3c-1 .9-2 1.3-3.2 1.3" transform="rotate(44 254.6 134.6)"></path>
+	            <path id="Fill-46" d="M231.9 229.3c-1.2 0-2.3-.4-3.2-1.3l-16.3-16.4a4.4 4.4 0 0 1 6.2-6.2l16.4 16.3a4.4 4.4 0 0 1-3.1 7.6"></path>
+	            <path id="Fill-47" d="M215.5 57.8a4.4 4.4 0 0 1-3.1-7.6L228.7 34A4.4 4.4 0 1 1 235 40l-16.4 16.4c-.8.9-2 1.3-3.1 1.3"></path>
+	          </g>
+	          <g id="sunglasses" transform="translate(48.6 79.1)">
+	            <path id="Fill-53" fill="#167D81" d="M87 36c-.9 0-1.8-.2-2.7-.8 0 0-2.5-1.7-5.6-2-3.1 0-5.9 1.3-5.9 1.3a4.8 4.8 0 0 1-6.4-2 4.8 4.8 0 0 1 1.9-6.4 22 22 0 0 1 11-2.4 22 22 0 0 1 10.6 3.7 4.8 4.8 0 0 1-2.8 8.7"></path>
+	            <path id="Fill-54" fill="#167D81" d="M29.3 58.7c-3.3-.2-6.6-.6-9.4-1.1C13.6 56.4 8.4 52 4.8 44.8c-5.6-11-6.4-26.7-2-35.6C7.1.5 20.8-.5 31.7.2c10.5.6 24.7 3.5 30.8 8.3 4.4 3.6 7.4 9.4 8.9 17.3 1 5.6.8 10.2.8 10.4v.1c-1 18.4-22.9 23.6-43 22.4"></path>
+	            <path id="Fill-55" fill="#32312F" d="M67.5 36c-.9 14.6-18.8 18.3-33.8 18.1h-2-.4l-6-.5-1.5-.2-3.1-.5a14.3 14.3 0 0 1-7.5-4.2l-.3-.2a28.2 28.2 0 0 1-6.6-13.2 46.2 46.2 0 0 1-1.4-14.8c.2-3.5 1-6.8 2.2-9.2 2-4 8-6 15.4-6.4a73 73 0 0 1 17 .9 83 83 0 0 1 16.6 4.4l.4.2c1.1.6 2.1 1.1 2.9 1.7l.1.1a14.2 14.2 0 0 1 3.5 4l1 1.7a29 29 0 0 1 2.4 7.2c1.3 5.8 1 11 1 11"></path>
+	            <path id="Fill-56" fill="#167D81" d="M124.6 64.5c-20-1.2-41-9-39.9-27.4V37c0-.2.4-4.9 2.1-10.2 2.4-7.7 6-13.2 11-16.1 6.6-4 21-5.2 31.6-4.6 10.7.7 24.3 3.4 27.5 12.4 3.3 9.5.6 24.9-6.3 35.2-4.4 6.7-10.2 10.5-16.5 10.8-2.9.2-6.2.2-9.5 0"></path>
+	            <path id="Fill-57" fill="#32312F" d="M153.5 27.4c.2 13.1-7.4 31.7-19.7 32.4a81.3 81.3 0 0 1-24.1-2.4 45 45 0 0 1-10.5-4.2A18.9 18.9 0 0 1 90 42.7c-.5-1.7-.7-3.4-.6-5.3 0 0 1.5-17 10.8-22.7 3.2-2 9.7-3.3 17.1-3.8a95.2 95.2 0 0 1 16.5.4c4 .5 7.8 1.3 11 2.5l.6.3c1.9.7 3.4 1.6 4.7 2.7a8 8 0 0 1 2.5 4c.6 2 .9 4.2 1 6.6"></path>
+	            <g id="shade1">
+	                <path fill="#747370" d="M49 7.8l-34.6 42-1.2-1.1-.3-.2a28.2 28.2 0 0 1-5.7-10.3l27.2-33a83 83 0 0 1 14.7 2.6"></path>
+	                <path fill="#9E9D9A" d="M63 16.2L31.8 54h-.5l-6-.5 34-41.5.2.1a14.2 14.2 0 0 1 3.5 4"></path>
+	             </g>
+	            <path id="Fill-60" fill="#9E9D9A" d="M133.8 11.3l-34.6 42a18.9 18.9 0 0 1-8.9-9.7l27-32.7a95.2 95.2 0 0 1 16.5.4"></path>
+	            <path id="Fill-61" fill="#747370" d="M150 16.8l-34.4 41.9a68.3 68.3 0 0 1-6-1.3L145.5 14c1.9.7 3.4 1.6 4.7 2.7"></path>
+	            <path id="Fill-62" fill="#FFFFFE" d="M58 30.4c-1.5 0-3-1-3.4-2.7-4-16-27-13.3-27.2-13.3a3.6 3.6 0 0 1-.9-7C36.7 6 57 8.4 61.5 26a3.6 3.6 0 0 1-3.4 4.4"></path>
+	            <path id="Fill-63" fill="#FFFFFE" d="M144.3 38.6h-.6c-2-.4-3.3-2.2-3-4.1.6-3.2 0-5.6-1.8-7.4-5-5.4-18.5-5.3-23.3-4.8a3.6 3.6 0 0 1-.7-7.1c.2 0 5-.5 11 0 8.4.7 14.5 3 18.2 7 3.3 3.5 4.5 8 3.7 13.4-.3 1.8-1.8 3-3.5 3"></path>
+	          </g>
+	          <g id="Mouth" transform="translate(110 143.5)">
+	            <path id="Fill-76" fill="#D75346" d="M27.8 0A14 14 0 0 1 0 0h27.8"></path>
+	            <path id="Fill-77" fill="#E69589" d="M22.2 10.8a13.9 13.9 0 0 1-16.5 0 13.9 13.9 0 0 1 16.5 0"></path>
+	            <path id="Fill-78" fill="#FFFDF8" d="M27.8 0a14 14 0 0 1-.6 3.8H.6A14 14 0 0 1 0 0h27.8"></path>
+	          </g>
+	    	</svg>
+		</div>
+	</div>
+	<div id="cards" style="width:400px;height: 400px;">
+		<img src="./images/cover.png" id="game-cover" />
+		<div class="cover">开始游戏</div>
+	</div>
+	<div id="box">
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+		<div class="box"></div>
+	</div>
+	<div style="text-align: center;">
+		<button id="refresh" onclick="javascript:location.reload();">重来</button>
+	</div>
+	<audio src="./audio/yanglegeyang.mp3" preload="true" loop="true" id="game-music"></audio>
+	<audio src="./audio/haoyunlai.mp3" preload="true" id="game-winmusic"></audio>
+	<audio src="./audio/select.mp3" preload="true" id="game-select"></audio>
+	<audio src="./audio/disappear.mp3" preload="true" id="game-disappear"></audio>
+<script type="text/javascript">
+	
+</script>
+<script src="./jquery.js"></script>
+<script>
+	var gameCards = [];
+	const imageFolder = './images/医';
+	const allCount = 210;//必须是3的倍数同时是14的倍数
+	const cardSize = 50;//每张卡牌的大小
+	const cw = 400;//容器的宽度
+	const ch = 400;//容器的高度
+
+	function beginGame() {
+		//定义每张卡牌数量和样式
+		const map = {
+			1: '病毒.png',
+			2: '防护服.png',
+			3: '防护口罩.png',
+			4: '咳嗽.png',
+			5: '酒精.png',
+			6: '口罩.png',
+			7: '棉签.png',
+			8: '棉头.png',
+			9: '试管.png',
+			10: '试剂.png',
+			11: '手套.png',
+			12: '温度计.png',
+			13: '行程码.png',
+			14: '做核酸.png'
+		};
+		let currentCount = allCount;
+		let cardsContainer = document.getElementById('cards');
+		cardsContainer.style.width = cw + 'px';
+		cardsContainer.style.height = ch + 'px';
+		let jpgLength = Object.keys(map).length;
+		let styleStr = `#cards .card {
+				width: ${cardSize}px;
+				height: ${cardSize}px;
+			}`;
+
+		for(let id in map) {
+			if(map.hasOwnProperty(id)) {
+				const count = Math.ceil(Math.random() * currentCount / jpgLength / 3) * 3;//每组牌最多是剩余总数的1/4, 且必须是3的倍数
+				map[id] = {
+					jpg: map[id],
+					count: count,
+					id
+				};
+				styleStr += `#cards .card[data-id="${id}"], #box .box .card[data-id="${id}"] {background-image:url("${imageFolder}/${map[id].jpg}");}`;
+				jpgLength--;
+				currentCount -= count;
+				//console.log(count,currentCount)
+			}
+		}
+		document.getElementById('card-bg-style').innerHTML = styleStr;
+
+		/*let count = 0;
+		Object.values(map).forEach(function(item) {
+			count+= item.count;
+		});
+		console.log(count)*/
+
+		//构建卡牌顺序坐标数据和生成dom
+		let idArr = Object.keys(map);
+		var html = '', numberCount = 0;
+		const values = Object.values(map);
+		function createCardHtml() {
+			let cardIndex = Math.floor(Math.random() * values.length);
+			if(values[cardIndex] && values[cardIndex].count) {
+				//console.log(cardIndex, values[cardIndex].id);
+				const gap = 5;
+				let left = parseInt(Math.random() * cw - cardSize - gap);
+				left = left < gap ? gap : left;
+				let top = parseInt(Math.random() * ch - cardSize - gap);
+				top = top < gap ? gap : top;
+				gameCards.push({
+					id: values[cardIndex].id,
+					left,
+					top
+				});
+				html += `<div class="card" data-id="${values[cardIndex].id}" index="${numberCount}" style="left:${left}px;top:${top}px;"></div>`
+				values[cardIndex].count--;
+				if(!values[cardIndex].count) {
+					values.splice(cardIndex, 1);
+				}
+				numberCount++;
+				if(numberCount < allCount) {
+					createCardHtml();
+				}
+			}
+		}
+		createCardHtml();
+		cardsContainer.innerHTML = html;
+		//console.log(gameCards);
+		findValidClick();
+	}
+
+	function findValidClick() {
+		const cards = document.querySelectorAll('.card');
+		cards.forEach(function(item) {
+			const index = +item.getAttribute('index');
+			const target = gameCards[index];
+			let isAtBack = false;
+			gameCards.forEach(function(_item, _index) {
+				if(_index === index || _item.remove || _item.waitRemove) {
+					return;
+				}
+				if(_item.left + cardSize > target.left && _item.left < target.left + cardSize && 
+					_item.top + cardSize > target.top && _item.top < target.top + cardSize && _index > index) {
+					//有重叠且被压在下面
+					isAtBack = true;
+				}
+			})
+			if(isAtBack) {
+				item.setAttribute('back', 'true');
+			} else {
+				item.removeAttribute('back', 'true');
+			}
+		});
+	}
+
+
+	let musicTimeout, musicInterval;
+	const music = document.getElementById('game-music');
+	const winMusic = document.getElementById('game-winmusic');
+	const select = document.getElementById('game-select');
+	const disappear = document.getElementById('game-disappear');
+	function playAudio(audioSource) {
+		music.volume = 0.4;
+		if(musicTimeout) {
+			clearTimeout(musicTimeout);
+			clearInterval(musicInterval);
+		}
+		musicTimeout = setTimeout(function() {
+			musicInterval = setInterval(function() {
+				if(music.volume >= 1) {
+					music.volume = 1;
+					return clearInterval(musicInterval);
+				}
+				music.volume = music.volume <= 0.9 ? music.volume + 0.1 : 1;
+			}, 100);
+		}, 1000);
+		audioSource.currentTime = 0;
+		audioSource.play();
+	}
+	$('body').on('click', '#cards .cover', function() {
+		music.play();
+		beginGame();
+		$('#game-sun .sun').addClass('animate');
+	});
+	$('body').on('click', '#cards .card', function() {
+		if($(this).attr('back') || $(this).hasClass('waitRemove')) {
+			return;
+		}
+		const $firstValibleBox = $('#box .box:not(.fill)').first();
+		if(!gameOver()) {
+			return;
+		}
+		playAudio(select);
+		const thisId = $(this).attr('data-id');
+		$firstValibleBox.attr('data-id', thisId);
+		$firstValibleBox.addClass('fill');
+		$(this).addClass('waitRemove');
+		$(this).css({
+			'position': 'fixed',
+			'left': $(this).offset().left,
+			'top': $(this).offset().top
+		});
+		gameCards[$(this).attr('index')].waitRemove = true;
+		$(this).animate({
+			left: $firstValibleBox.offset().left,
+			top: $firstValibleBox.offset().top
+		}, 200, () => {
+			$firstValibleBox.html($(this));
+			$(this)[0].style = '';
+			const $existBox = $('#box .box[data-id="'+thisId+'"]');
+			if($existBox.length >= 3) {
+				playAudio(disappear);
+				//消除
+				$(this).remove();
+				$existBox.animate({
+					width: 0
+				}, 100);
+				setTimeout(function(){
+					$existBox.remove();
+					$('#box').append(`<div class="box"></div>
+						<div class="box"></div>
+						<div class="box"></div>`);
+					testWin();
+				}, 100);
+				
+				$('#cards .card.waitRemove[data-id="'+thisId+'"]').each(function(){
+					const index = $(this).attr('index');
+					$(this).remove();
+					gameCards[index].remove = true;
+				});
+			} else {
+				gameOver();
+			}
+		});
+		function gameOver() {
+			const $firstValibleBox = $('#box .box:not(.fill)').first();
+			if(!$firstValibleBox.length) {
+				alert('Game Over!');
+				$('#refresh').show();
+				return false;
+			}
+			return true;
+		}
+		function testWin() {
+			if(!$('#cards .card').length && !$('#box .box .card').length) {
+				$('#cards').html(`<div class="cover winer">Winer</div>`);
+				$('#refresh').show();
+				winMusic.play();
+				music.pause();
+				$('#game-sun .sun').removeClass('animate');
+				$('svg #rays').addClass('rotate');
+			}
+		}
+		findValidClick();
+	});
+</script>
+
+</body>
+</html>
